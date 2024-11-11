@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+
+<canvas id="miCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('miCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', ajustarTamañoCanvas);
+  ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
+
+  function dibujarFiguraGeometricaFumada() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    const centroX = canvas.width / 2;
+    const centroY = canvas.height / 2;
+    const numLados = 4; // Número de lados de la figura central
+    const numCapas = 88; // Número de capas para el efecto de profundidad
+    const radioInicial = 4; // Radio inicial de la figura
+    const incrementoRadio = 30; // Incremento de radio por capa
+
+    // Array de colores
+    const colores = [
+  'black', 'red', 'yellow', 'green', 'white', 'salmon', 'blue', 'purple', 'orange',
+  'pink', 'cyan', 'magenta', 'lime', 'brown', 'teal', 'gold', 'silver', 'maroon',
+  'navy', 'olive', 'coral', 'turquoise', 'violet', 'indigo', 'khaki', 'lavender'
+];
+
+    for (let capa = 0; capa < numCapas; capa++) {
+      const radio = radioInicial + capa * incrementoRadio;
+      ctx.beginPath();
+
+      for (let i = 0; i <= numLados; i++) {
+        const angulo = (i * 2 * Math.PI) / numLados + (capa % 2 === 0 ? 0 : Math.PI / numLados);
+        const x = centroX + radio * Math.cos(angulo);
+        const y = centroY + radio * Math.sin(angulo);
+
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+
+      ctx.closePath();
+      // Usar el array de colores de forma cíclica
+      ctx.strokeStyle = colores[capa % colores.length];
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    }
+  }
+
+  dibujarFiguraGeometricaFumada(); // Dibujar la figura geométrica
+</script>
+

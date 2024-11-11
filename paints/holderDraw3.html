@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+<canvas id="miCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('miCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', ajustarTamañoCanvas);
+  ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
+
+  let tiempo = 0; // Variable de tiempo para animación
+
+  function dibujarEfecto4D() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    const centroX = canvas.width / 2;
+    const centroY = canvas.height / 2;
+    const numFiguras = 100; // Número de figuras para el efecto "4D"
+    const maxRadio = Math.min(canvas.width, canvas.height) / 4;
+
+    for (let i = 0; i < numFiguras; i++) {
+      const radio = maxRadio * (0.5 + 0.5 * Math.sin((tiempo + i) * 0.1));
+      const alpha = 0.5 + 0.5 * Math.cos((tiempo + i) * 0.05); // Variación de transparencia
+      const anguloOffset = i * 0.2 + tiempo * 0.01;
+
+      ctx.beginPath();
+      ctx.arc(
+        centroX + radio * Math.cos(anguloOffset),
+        centroY + radio * Math.sin(anguloOffset),
+        10 + 5 * Math.sin((tiempo + i) * 0.2), // Tamaño dinámico
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`; // Transparencia dinámica
+      ctx.fill();
+    }
+
+    tiempo += 0.15; // Incrementar el tiempo para la animación
+    requestAnimationFrame(dibujarEfecto4D); // Continuar la animación
+  }
+
+  dibujarEfecto4D(); // Iniciar la animación
+</script>

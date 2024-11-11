@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+
+<canvas id="miCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('miCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', ajustarTamañoCanvas);
+  ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
+
+  let tiempo = 0; // Variable de tiempo para animación
+
+  function dibujarFiguraConGradiente(x, y, numLados, radio, anguloInicial) {
+    // Crear un gradiente lineal dinámico
+    const gradiente = ctx.createLinearGradient(x - radio, y - radio, x + radio, y + radio);
+    gradiente.addColorStop(0, `hsl(${(tiempo * 0.5) % 360}, 100%, 50%)`); // Gradiente más lento
+    gradiente.addColorStop(1, `hsl(${(tiempo * 0.5 + 180) % 360}, 100%, 50%)`);
+
+    ctx.beginPath();
+    ctx.moveTo(
+      x + radio * Math.cos(anguloInicial),
+      y + radio * Math.sin(anguloInicial)
+    );
+
+    for (let i = 1; i <= numLados; i++) {
+      const angulo = anguloInicial + (i * 2 * Math.PI) / numLados;
+      ctx.lineTo(x + radio * Math.cos(angulo), y + radio * Math.sin(angulo));
+    }
+
+    ctx.fillStyle = gradiente;
+    ctx.fill();
+
+    // Añadir borde negro de 5px
+    ctx.strokeStyle = 'purple';
+    ctx.lineWidth = 10;
+    // ctx.stroke();
+  }
+
+  function dibujarPatronGeometrico() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    const numFiguras = 10; // Número de figuras
+    const centroX = canvas.width / 2;
+    const centroY = canvas.height / 2;
+
+    for (let i = 0; i < numFiguras; i++) {
+      const radio = 20 + i * 15; // Aumentar la separación entre figuras
+      const numLados = 3 + (i % 5); // Triángulos, cuadrados, pentágonos, etc.
+      const angulo = tiempo * 0.001 + i * 0.3;
+
+      const x = centroX + Math.sin(tiempo * 0.005 + i * 0.5) * 250; // Aumentar la distancia
+      const y = centroY + Math.cos(tiempo * 0.005 + i * 0.5) * 250; // Aumentar la distancia
+
+      dibujarFiguraConGradiente(x, y, numLados, radio, angulo);
+    }
+
+    tiempo += 0.7; // Incrementar más lento para un gradiente más suave
+    requestAnimationFrame(dibujarPatronGeometrico); // Continuar la animación
+  }
+
+  dibujarPatronGeometrico(); // Iniciar la animación
+</script>

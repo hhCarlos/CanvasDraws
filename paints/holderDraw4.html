@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>
+</body>
+</html>
+
+<canvas id="miCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('miCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+ 
+  window.addEventListener('resize', ajustarTamañoCanvas);
+  ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
+
+  let tiempo = 0; // Variable de tiempo para animación
+
+  function obtenerColorPersonalizado(indice) {
+    // Paleta de colores: negro, morado, rojo y negro
+    const colores = [
+  'black', 'red', 'yellow', 'green', 'white', 'salmon', 'blue', 'purple', 'orange',
+  'pink', 'cyan', 'magenta', 'lime', 'brown', 'teal', 'gold', 'silver', 'maroon',
+  'navy', 'olive', 'coral', 'turquoise', 'violet', 'indigo', 'khaki', 'lavender',
+  'plum', 'peachpuff', 'crimson', 'darkgreen', 'darkblue'
+];
+
+    return colores[indice % colores.length];
+  }
+
+  function dibujarPatronDeLineas() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    const numLineas = 300; // Número de líneas para un patrón denso
+    const centroX = canvas.width / 2;
+    const centroY = canvas.height / 2;
+
+    for (let i = 0; i < numLineas; i++) {
+      const angulo = (i * Math.PI * 2) / numLineas;
+      const longitud = (Math.sin(tiempo * 0.005 + i) + 1) * (canvas.width / 2); // Animación más lenta
+
+      // Calcular coordenadas de inicio y fin
+      const x1 = centroX;
+      const y1 = centroY;
+      const x2 = centroX + longitud * Math.cos(angulo);
+      const y2 = centroY + longitud * Math.sin(angulo);
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = obtenerColorPersonalizado(i); // Usar la paleta de colores personalizada
+      ctx.lineWidth = 0.5 + Math.sin(tiempo * 0.005 + i) * 2; // Variación de grosor más lenta
+      ctx.stroke();
+    }
+
+    tiempo += 0.2; // Incrementar el tiempo más lentamente para la animación
+    requestAnimationFrame(dibujarPatronDeLineas); // Continuar la animación
+  }
+
+  dibujarPatronDeLineas(); // Dibujar el patrón de líneas
+</script>
