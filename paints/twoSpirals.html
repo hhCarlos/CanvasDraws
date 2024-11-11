@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+<script>
+    const canvas = document.getElementById('miCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Ajustar el tamaño del canvas
+    function ajustarTamañoCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', ajustarTamañoCanvas);
+    ajustarTamañoCanvas(); // Llamada inicial
+
+    let anguloIzquierda = 0;
+    let anguloDerecha = 0;
+    let distancia = 0;
+
+    // Función para dibujar un espiral
+    function dibujarEspiral(xCentro, yCentro, angulo, direccion, colorBase) {
+        ctx.save();
+        ctx.translate(xCentro, yCentro);
+        ctx.rotate(angulo);
+
+        for (let i = 0; i < 3500; i++) {
+            ctx.beginPath();
+            
+            // Cambiar el color gradualmente con HSL
+            const hue = (i *((i*0.123) - 0.999) + colorBase) % 360;
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+
+            const x = distancia * Math.cos(i * 0.1 * direccion);
+            const y = distancia * Math.sin(i * 0.1 * direccion);
+            const radio = i * 0.007;
+
+            ctx.globalCompositeOperation = 'lighter'; // Efecto de mezcla para difuminar en la intersección
+
+            ctx.arc(x, y, radio, 0, Math.PI * 2);
+            ctx.fill();
+
+            distancia += 0.25;
+        }
+
+        ctx.restore();
+        distancia = 0;
+    }
+
+    function animar() {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+        // Dibujar el espiral hacia la izquierda
+        dibujarEspiral(canvas.width / 4, canvas.height / 2, anguloIzquierda, -1, 0);
+
+        // Dibujar el espiral hacia la derecha
+        dibujarEspiral((canvas.width * 3) / 4, canvas.height / 2, anguloDerecha, 1, 180);
+
+        anguloIzquierda += 0.0010;
+        anguloDerecha -= 0.0010;
+
+        requestAnimationFrame(animar); // Continuar la animación
+    }
+
+    animar(); // Iniciar la animación
+</script>

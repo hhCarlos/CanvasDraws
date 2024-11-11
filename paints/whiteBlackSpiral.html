@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+<script>
+  const canvas = document.getElementById('miCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Función para ajustar el tamaño del canvas al tamaño de la ventana
+  function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', ajustarTamañoCanvas);
+  ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
+
+  let angulo = 0; // Ángulo inicial
+  let distancia = 0; // Distancia inicial desde el centro
+
+  function dibujarEspiral() {
+    const centroX = canvas.width / 2;
+    const centroY = canvas.height / 2;
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    ctx.save();
+    ctx.translate(centroX, centroY);
+    ctx.rotate(angulo);
+
+    for (let i = 0; i < 7000; i++) { // Aumentar el número de iteraciones para un espiral más grande
+      ctx.beginPath();
+      ctx.fillStyle = i % 2 === 0 ? 'white' : 'black'; // Alternar colores
+
+      const x = distancia * Math.cos(i * 0.1);
+      const y = distancia * Math.sin(i * 0.1);
+      const radio = i * 0.007; // Incrementar el tamaño del círculo en cada iteración
+
+      ctx.arc(x, y, radio, 0, Math.PI * 2); // Dibujar un círculo con tamaño variable
+      ctx.fill();
+      distancia += 0.25; // Incrementar la distancia para que el espiral se expanda
+    }
+
+    ctx.restore();
+    angulo += 0.0010; // Ajustar la velocidad de rotación
+    distancia = 0; // Reiniciar la distancia para la próxima iteración
+
+    requestAnimationFrame(dibujarEspiral); // Continuar la animación
+  }
+
+  dibujarEspiral(); // Iniciar la animación
+</script>
