@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+<script>
+    const canvas = document.getElementById('miCanvas');
+const ctx = canvas.getContext('2d');
+
+// Ajustar el tamaño del canvas
+function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', ajustarTamañoCanvas);
+ajustarTamañoCanvas(); // Llamada inicial
+
+// Variables para la animación
+let angulo = 0; // Ángulo inicial
+let radio = 2; // Radio inicial
+let incrementoRadio = 0.5; // Incremento del radio por iteración
+
+// Paleta de colores: blanco, morado y negro
+const colores = ['white', 'purple', 'black'];
+
+// Función para dibujar un espiral circular animado
+function dibujarEspiralCircular() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    let centroX = canvas.width / 2;
+    let centroY = canvas.height / 2;
+    radio = 2; // Reiniciar el radio para cada animación
+
+    for (let i = 0; i < 5000; i++) { // Aumentar el límite para un espiral más grande
+        // Calcular la posición del punto en el espiral
+        const x = centroX + radio * Math.cos(angulo + i * 0.05);
+        const y = centroY + radio * Math.sin(angulo + i * 0.05);
+
+        // Dibujar un pequeño segmento de línea en cada iteración
+        ctx.beginPath();
+        ctx.arc(x, y, 1.5, 0, Math.PI * 2); // Dibuja un pequeño círculo como punto
+        ctx.fillStyle = colores[i % colores.length]; // Alternar colores
+        ctx.fill();
+
+        // Incrementar el radio para expandir el espiral
+        radio += incrementoRadio;
+    }
+
+    // Incrementar el ángulo para la animación y redibujar
+    angulo += 0.05; // Ajustar este valor para cambiar la velocidad de la animación
+
+    requestAnimationFrame(dibujarEspiralCircular); // Continuar la animación
+}
+
+dibujarEspiralCircular(); // Iniciar la animación
+
+</script>

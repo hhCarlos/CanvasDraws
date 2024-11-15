@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+<script>
+    const canvas = document.getElementById('miCanvas');
+const ctx = canvas.getContext('2d');
+
+// Ajustar el tamaño del canvas
+function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', ajustarTamañoCanvas);
+ajustarTamañoCanvas(); // Llamada inicial
+
+// Función para dibujar un espiral cuadrado con colores específicos
+function dibujarEspiralCuadrado() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    let centroX = canvas.width / 2;
+    let centroY = canvas.height / 2;
+    let longitud = 5; // Longitud inicial del lado del cuadrado
+    let incremento = 2; // Incremento de longitud por iteración
+    let angulo = 0; // Ángulo inicial
+    let x = centroX, y = centroY; // Posición inicial
+
+    ctx.lineWidth = 2; // Grosor de las líneas
+
+    const colores = ['white', 'purple', 'black']; // Paleta de colores: blanco, morado y negro
+
+    for (let i = 0; i < 1000; i++) { // Aumentar el límite para espirales más grandes
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+
+        // Calcular la nueva posición en función del ángulo
+        if (angulo % 360 < 90) { // Dirección hacia la derecha
+            x += longitud;
+        } else if (angulo % 360 < 180) { // Dirección hacia abajo
+            y += longitud;
+        } else if (angulo % 360 < 270) { // Dirección hacia la izquierda
+            x -= longitud;
+        } else { // Dirección hacia arriba
+            y -= longitud;
+        }
+
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = colores[i % colores.length]; // Alternar colores entre blanco, morado y negro
+        ctx.stroke();
+
+        // Cambiar el ángulo y aumentar la longitud
+        angulo += 90;
+        longitud += incremento;
+    }
+}
+
+dibujarEspiralCuadrado(); // Iniciar el dibujo
+</script>

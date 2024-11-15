@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="miCanvas"></canvas>    
+</body>
+</html>
+
+<script>
+  const canvas = document.getElementById('miCanvas');
+const ctx = canvas.getContext('2d');
+
+// Ajustar el tamaño del canvas
+function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', ajustarTamañoCanvas);
+ajustarTamañoCanvas(); // Llamada inicial
+
+// Función para dibujar un planeta con gradiente
+function dibujarPlaneta(xCentro, yCentro, radioPlaneta, colorCentro, colorBorde) {
+    const gradiente = ctx.createRadialGradient(xCentro, yCentro, 50, xCentro, yCentro, radioPlaneta);
+    gradiente.addColorStop(0, colorCentro); // Color sólido en el centro
+    gradiente.addColorStop(0.8, colorBorde); // Color hacia el borde
+    gradiente.addColorStop(1, `rgba(255, 255, 255, 0)`); // Transparente al final para efecto de difuminado
+
+    ctx.fillStyle = gradiente;
+    ctx.beginPath();
+    ctx.arc(xCentro, yCentro, radioPlaneta, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+// Función para dibujar estrellas
+function dibujarEstrellas(cantidad, exclusiones) {
+    for (let i = 0; i < cantidad; i++) {
+        let x, y;
+        let valido = false;
+
+        // Generar coordenadas de estrellas hasta que no interfieran con los planetas
+        while (!valido) {
+            x = Math.random() * canvas.width;
+            y = Math.random() * canvas.height;
+
+            valido = exclusiones.every(exclusion => {
+                const dx = x - exclusion.x;
+                const dy = y - exclusion.y;
+                return Math.sqrt(dx * dx + dy * dy) > exclusion.radio;
+            });
+        }
+
+        const radioEstrella = Math.random() * 2 + 0.1; // Tamaño de la estrella
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x, y, radioEstrella, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// Dibujar la escena completa
+function dibujarEscena() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
+
+    // Posiciones y radios de los planetas
+    const planetaAzul = { x: canvas.width / 4, y: canvas.height / 2 - 50, radio: 250 };
+    const planetaAmarillo = { x: (canvas.width * 3) / 4 + 50, y: canvas.height / 2 + 50, radio: 90 };
+
+    // Dibujar estrellas, evitando las áreas de los planetas
+    dibujarEstrellas(100, [planetaAzul, planetaAmarillo]);
+
+    // Dibujar el planeta azul más grande
+    dibujarPlaneta(planetaAzul.x, planetaAzul.y, planetaAzul.radio, 'rgba(135, 206, 250, 1)', 'rgba(70, 130, 180, 1)');
+
+    // Dibujar el planeta amarillo más pequeño
+    dibujarPlaneta(planetaAmarillo.x, planetaAmarillo.y, planetaAmarillo.radio, 'rgba(255, 255, 102, 1)', 'rgba(255, 204, 0, 1)');
+}
+
+dibujarEscena(); // Iniciar la escena
+</script>
+
