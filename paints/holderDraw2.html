@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        *,
-        *::after,
-        *::before {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *,
+    *::after,
+    *::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        html {
-            font-size: 62.5%;
-        }
+    html {
+      font-size: 62.5%;
+    }
 
-        body {
-            box-sizing: inherit;
-            overflow: hidden;
-        }
-    </style>
+    body {
+      box-sizing: inherit;
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body>
-    <canvas id="miCanvas"></canvas>    
+  <canvas id="miCanvas"></canvas>
 </body>
+
 </html>
 
-
-<canvas id="miCanvas"></canvas>
 <script>
   const canvas = document.getElementById('miCanvas');
   const ctx = canvas.getContext('2d');
@@ -74,7 +75,7 @@
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo negro
 
-    const numFiguras = 10; // Número de figuras
+    const numFiguras = 15; // Número de figuras
     const centroX = canvas.width / 2;
     const centroY = canvas.height / 2;
 
@@ -83,8 +84,8 @@
       const numLados = 3 + (i % 5); // Triángulos, cuadrados, pentágonos, etc.
       const angulo = tiempo * 0.001 + i * 0.3;
 
-      const x = centroX + Math.sin(tiempo * 0.005 + i * 0.5) * 250; // Aumentar la distancia
-      const y = centroY + Math.cos(tiempo * 0.005 + i * 0.5) * 250; // Aumentar la distancia
+      const x = centroX + Math.sin(tiempo * 0.008 + i * 0.5) * 300; // Aumentar la distancia
+      const y = centroY + Math.cos(tiempo * 0.005 + i * 0.5) * 300; // Aumentar la distancia
 
       dibujarFiguraConGradiente(x, y, numLados, radio, angulo);
     }
@@ -94,4 +95,20 @@
   }
 
   dibujarPatronGeometrico(); // Iniciar la animación
+
+  let clickcounter = 0;
+  let clicktimer;
+  canvas.addEventListener('click', () => {
+    clickcounter++;
+
+    if (clicktimer) {
+      clearTimeout(clicktimer);
+    }
+
+    clicktimer = setTimeout(() => {
+      if (clickcounter == 2) {
+        history.back();
+      }
+    }, 400);
+  });
 </script>

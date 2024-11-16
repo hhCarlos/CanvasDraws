@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            box-sizing: inherit;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="miCanvas"></canvas>
+</body>
+
+</html>
+
+<script>
+    const canvas = document.getElementById('miCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Ajustar el tamaño del canvas
+    function ajustarTamañoCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', ajustarTamañoCanvas);
+    ajustarTamañoCanvas(); // Llamada inicial
+
+    // Variables de animación
+    let angulo = 50; // Ángulo inicial
+    let radioBase = 1; // Radio inicial
+    let incrementoRadio = 0.07; // Incremento del radio por iteración
+    let hue = 0; // Color inicial en el espectro HSL
+    let creciendo = true; // Variable para controlar si el espiral está creciendo o contrayéndose
+
+    // Función para dibujar un espiral animado y reversible
+    function dibujarEspiral() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.07)'; // Fondo negro con leve transparencia para efecto de "rastro"
+        ctx.fillRect(0, 0, canvas.width, canvas.height); // Fondo con transparencia para dejar un rastro
+
+        let centroX = canvas.width / 2;
+        let centroY = canvas.height / 2;
+        let radio = radioBase; // Inicializar radio para la animación
+
+        for (let i = 0; i < 360; i++) { // Ajustar para cambiar la cantidad de puntos por frame
+            // Calcular la posición del punto en el espiral
+            const x = centroX + radio * Math.cos(angulo);
+            const y = centroY + radio * Math.sin(angulo);
+
+            // Dibujar un punto en el espiral
+            ctx.beginPath();
+            ctx.arc(x, y, 1, 0, Math.PI * 2); // Tamaño de cada punto
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`; // Colores cambiantes en el espectro HSL
+            ctx.fill();
+
+            // Incrementar el ángulo y el radio para el siguiente punto
+            angulo += 0.1; // Ajustar este valor para cambiar la densidad del espiral
+            radio += incrementoRadio; // Ajustar para cambiar la velocidad de expansión
+            hue = (hue + 0.7) % 360; // Incremento lento del color para un arcoíris suave
+        }
+
+        // Controlar la expansión y contracción del espiral
+        if (creciendo) {
+            radioBase += 0.4; // Expansión constante del espiral
+            if (radioBase > 300) { // Valor máximo para detener y comenzar la contracción
+                creciendo = false;
+            }
+        } else {
+            radioBase -= 0.7; // Contracción del espiral
+            if (radioBase < -70) { // Valor mínimo para detener y comenzar la expansión
+                creciendo = true;
+            }
+        }
+
+        requestAnimationFrame(dibujarEspiral); // Continuar la animación
+    }
+
+    dibujarEspiral(); // Iniciar la animación
+
+    // Doble clic para volver atrás
+    let clickcounter = 0;
+    let clicktimer;
+    canvas.addEventListener('click', () => {
+        clickcounter++;
+
+        if (clicktimer) {
+            clearTimeout(clicktimer);
+        }
+
+        clicktimer = setTimeout(() => {
+            if (clickcounter == 2) {
+                history.back();
+            }
+        }, 400);
+    });
+
+</script>

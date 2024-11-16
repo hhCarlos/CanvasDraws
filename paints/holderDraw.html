@@ -1,84 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        *,
-        *::after,
-        *::before {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *,
+    *::after,
+    *::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        html {
-            font-size: 62.5%;
-        }
+    html {
+      font-size: 62.5%;
+    }
 
-        body {
-            box-sizing: inherit;
-            overflow: hidden;
-        }
-    </style>
+    body {
+      box-sizing: inherit;
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body>
-    <canvas id="miCanvas"></canvas>    
+  <canvas id="miCanvas"></canvas>
 </body>
+
 </html>
 
 <script>
-    const canvas = document.getElementById('miCanvas');
-    const ctx = canvas.getContext('2d');
-  
-    function ajustarTamañoCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  const canvas = document.getElementById('miCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function ajustarTamañoCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', ajustarTamañoCanvas);
+  ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
+
+  let tiempo = 0; // Variable de tiempo para animación
+
+  function dibujarFondoDifuminado() {
+    const gradiente = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, 0,
+      canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
+    );
+
+    gradiente.addColorStop(0, `hsl(${(tiempo * 0.5) % 360}, 100%, 50%)`); // Más lento
+    gradiente.addColorStop(1, `hsl(${(tiempo * 0.5 + 180) % 360}, 100%, 50%)`); // Más lento
+
+    ctx.fillStyle = gradiente;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function dibujarPatronPsicodelico() {
+    dibujarFondoDifuminado(); // Dibujar el fondo cambiante
+
+    const numFiguras = 50; // Número de figuras en el patrón
+    const centroX = canvas.width / 2;
+    const centroY = canvas.height / 2;
+
+    for (let i = 0; i < numFiguras; i++) {
+      ctx.beginPath();
+      const angulo = i * 0.3 + tiempo * 0.005; // Más lento
+      const radio = 15 + i * 20; // Tamaño más grande de las figuras
+      const x = centroX + radio * Math.cos(angulo);
+      const y = centroY + radio * Math.sin(angulo);
+
+      // Alternar entre esferas blancas y negras
+      ctx.fillStyle = i % 2 === 0 ? 'white' : 'black';
+      ctx.arc(x, y, 30, 0, Math.PI * 2); // Dibujar un círculo más grande
+      ctx.fill();
     }
-  
-    window.addEventListener('resize', ajustarTamañoCanvas);
-    ajustarTamañoCanvas(); // Llamada inicial para ajustar el tamaño
-  
-    let tiempo = 0; // Variable de tiempo para animación
-  
-    function dibujarFondoDifuminado() {
-      const gradiente = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 0,
-        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
-      );
-  
-      gradiente.addColorStop(0, `hsl(${(tiempo * 0.5) % 360}, 100%, 50%)`); // Más lento
-      gradiente.addColorStop(1, `hsl(${(tiempo * 0.5 + 180) % 360}, 100%, 50%)`); // Más lento
-  
-      ctx.fillStyle = gradiente;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    tiempo += 0.5; // Reducir la velocidad de incremento
+    requestAnimationFrame(dibujarPatronPsicodelico); // Continuar la animación
+  }
+
+  dibujarPatronPsicodelico(); // Iniciar la animación
+
+  let clickcounter = 0;
+  let clicktimer;
+  canvas.addEventListener('click', () => {
+    clickcounter++;
+
+    if (clicktimer) {
+      clearTimeout(clicktimer);
     }
-  
-    function dibujarPatronPsicodelico() {
-      dibujarFondoDifuminado(); // Dibujar el fondo cambiante
-  
-      const numFiguras = 50; // Número de figuras en el patrón
-      const centroX = canvas.width / 2;
-      const centroY = canvas.height / 2;
-  
-      for (let i = 0; i < numFiguras; i++) {
-        ctx.beginPath();
-        const angulo = i * 0.3 + tiempo * 0.005; // Más lento
-        const radio = 15 + i * 20; // Tamaño más grande de las figuras
-        const x = centroX + radio * Math.cos(angulo);
-        const y = centroY + radio * Math.sin(angulo);
-  
-        // Alternar entre esferas blancas y negras
-        ctx.fillStyle = i % 2 === 0 ? 'white' : 'black';
-        ctx.arc(x, y, 30, 0, Math.PI * 2); // Dibujar un círculo más grande
-        ctx.fill();
+
+    clicktimer = setTimeout(() => {
+      if (clickcounter == 2) {
+        history.back();
       }
-  
-      tiempo += 0.5; // Reducir la velocidad de incremento
-      requestAnimationFrame(dibujarPatronPsicodelico); // Continuar la animación
-    }
-  
-    dibujarPatronPsicodelico(); // Iniciar la animación
+    }, 400);
+  });
 </script>
-  

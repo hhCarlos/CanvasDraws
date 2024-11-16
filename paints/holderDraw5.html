@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        *,
-        *::after,
-        *::before {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *,
+    *::after,
+    *::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        html {
-            font-size: 62.5%;
-        }
+    html {
+      font-size: 62.5%;
+    }
 
-        body {
-            box-sizing: inherit;
-            overflow: hidden;
-        }
-    </style>
+    body {
+      box-sizing: inherit;
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body>
-    <canvas id="miCanvas"></canvas>    
+  <canvas id="miCanvas"></canvas>
 </body>
+
 </html>
 
 
@@ -55,10 +58,10 @@
 
     // Array de colores
     const colores = [
-  'black', 'red', 'yellow', 'green', 'white', 'salmon', 'blue', 'purple', 'orange',
-  'pink', 'cyan', 'magenta', 'lime', 'brown', 'teal', 'gold', 'silver', 'maroon',
-  'navy', 'olive', 'coral', 'turquoise', 'violet', 'indigo', 'khaki', 'lavender'
-];
+      'black', 'red', 'yellow', 'green', 'white', 'salmon', 'blue', 'purple', 'orange',
+      'pink', 'cyan', 'magenta', 'lime', 'brown', 'teal', 'gold', 'silver', 'maroon',
+      'navy', 'olive', 'coral', 'turquoise', 'violet', 'indigo', 'khaki', 'lavender'
+    ];
 
     for (let capa = 0; capa < numCapas; capa++) {
       const radio = radioInicial + capa * incrementoRadio;
@@ -85,5 +88,20 @@
   }
 
   dibujarFiguraGeometricaFumada(); // Dibujar la figura geométrica
-</script>
 
+  let clickcounter = 0;
+  let clicktimer;
+  canvas.addEventListener('click', () => {
+    clickcounter++;
+
+    if (clicktimer) {
+      clearTimeout(clicktimer);
+    }
+
+    clicktimer = setTimeout(() => {
+      if (clickcounter == 2) {
+        history.back();
+      }
+    }, 400);
+  });
+</script>

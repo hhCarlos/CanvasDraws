@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,9 +24,11 @@
         }
     </style>
 </head>
+
 <body>
-    <canvas id="miCanvas"></canvas>    
+    <canvas id="miCanvas"></canvas>
 </body>
+
 </html>
 
 <script>
@@ -53,9 +56,9 @@
 
         for (let i = 0; i < 3500; i++) {
             ctx.beginPath();
-            
+
             // Cambiar el color gradualmente con HSL
-            const hue = (i *((i*0.123) - 0.999) + colorBase) % 360;
+            const hue = (i * ((i * 0.123) - 0.999) + colorBase) % 360;
             ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
 
             const x = distancia * Math.cos(i * 0.1 * direccion);
@@ -91,4 +94,20 @@
     }
 
     animar(); // Iniciar la animación
+
+    let clickcounter = 0;
+    let clicktimer;
+    canvas.addEventListener('click', () => {
+        clickcounter++;
+
+        if (clicktimer) {
+            clearTimeout(clicktimer);
+        }
+
+        clicktimer = setTimeout(() => {
+            if (clickcounter == 2) {
+                history.back();
+            }
+        }, 400);
+    });
 </script>
